@@ -22,33 +22,35 @@ make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
 #
 #  modelHelper.getTargetModel()
 
-#  spaces = model.getAll(IfcSpace.class)
-#  spaces.each do |space|
-#    object_placement = space.getObjectPlacement()
-#    local_placements = object_placement.getReferencedByPlacements() # Gives us an EList<IfcLocalPlacement>
-#    local_placements.each do |local_placement|
-#      placement = IfcAxis2Placement3D.class.cast(local_placement.getRelativePlacement())
-#      point = placement.getLocation()
-#      translation = placement.getAxis()
-#      rotation = placement.getRefDirection()
-#      text = model.createAndAdd(IfcText.class)
-#      output = "Point: "
-#      point.getCoordinatesAsString().each do |coord|
-#        output = output + coord + ", "
-#      end
-#      #output = output + "Translation: "
+  root = modelHelper.getTargetModel().createAndAdd(IfcProject.class)
+  #modelHelper.copy(root, true)
 
-#      text.setWrappedValue(output)
-#      modelHelper.copy(text, false)
-#    end
-#  end
+  spaces = model.getAll(IfcSpace.class)
+  spaces.each do |space|
+    object_placement = space.getObjectPlacement()
+    local_placements = object_placement.getReferencedByPlacements() # Gives us an EList<IfcLocalPlacement>
+    local_placements.each do |local_placement|
+      placement = IfcAxis2Placement3D.class.cast(local_placement.getRelativePlacement())
+      point = placement.getLocation()
+      translation = placement.getAxis()
+      rotation = placement.getRefDirection()
+      text = modelHelper.getTargetModel().createAndAdd(IfcText.class)
+      output = "Point: "
+      point.getCoordinatesAsString().each do |coord|
+        output = output + coord + ", "
+      end
+      #output = output + "Translation: "
 
-  #model.getAll(IfcProject.class).each do |sentinel|
-  #  modelHelper.copy(sentinel, false)
-  #end
+      text.setWrappedValue(output)
+      #modelHelper.copy(text, false)
+    end
+  end
+
+  model.getAll(IfcSpace.class).each do |sentinel|
+    modelHelper.copy(sentinel, false)
+  end
   #model.getValues().each do |thing|
   #  modelHelper.copy(thing, false)
   #end
-  #modelHelper.getTargetModel()
-  raise Error
+  modelHelper.getTargetModel()
 end
