@@ -9,20 +9,28 @@ make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
     local_placements.each do |local_placement|
       root = modelHelper.getTargetModel().createAndAdd(IfcProject.class)
       placement = IfcAxis2Placement3D.class.cast(local_placement.getRelativePlacement())
-      point = placement.getLocation()
-      translation = placement.getAxis()
-      rotation = placement.getRefDirection()
-      output = "Point: "
-      point.getCoordinatesAsString().each do |coord|
+      origin = placement.getLocation()
+      z_axis = placement.getAxis()
+      x_axis = placement.getRefDirection()
+      output = "Origin: "
+      origin.getCoordinatesAsString().each do |coord|
         output = output + coord + ", "
       end
-      output = output + "Translation: "
-      translation.getDirectionRatiosAsString().each do |ratio|
-        output = output + ratio + ", "
+      output = output + "Z Axis: "
+      if z_axis != nil 
+        z_axis.getDirectionRatiosAsString().each do |ratio|
+          output = output + ratio + ", "
+        end
+      else
+        output = output + "null, "
       end
-      output = output + "Rotation: "
-      rotation.getDirectionRatiosAsString().each do |ratio|
-        output = output + ratio + ", "
+      output = output + "X Axis: "
+      if x_axis != nil
+        x_axis.getDirectionRatiosAsString().each do |ratio|
+          output = output + ratio + ", "
+        end
+      else
+        output = output + "null"
       end
       root.setName("Output")
       root.setDescription(output)
