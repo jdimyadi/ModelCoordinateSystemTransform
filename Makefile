@@ -22,7 +22,7 @@ OTHER_JARS = "$(QUERY_PLUGIN_PATH)BIMserver-query-plugin-shell.jar:$(MIRAH_PARSE
 
 # Build directories
 
-PACKAGE_DIR = com/arcabim/mvdlib/
+PACKAGE_DIR = com/arcabim/mvdlibtest/
 
 TEMP_DIR = temp/
 
