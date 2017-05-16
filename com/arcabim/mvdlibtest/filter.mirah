@@ -22,11 +22,13 @@ make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
 #
 #  modelHelper.getTargetModel()
 
-  root = modelHelper.getTargetModel().createAndAdd(IfcProject.class)
+
   #modelHelper.copy(root, true)
 
   spaces = model.getAll(IfcSpace.class)
   spaces.each do |space|
+    root = modelHelper.getTargetModel().createAndAdd(IfcProject.class)
+
     object_placement = space.getObjectPlacement()
     local_placements = object_placement.getReferencedByPlacements() # Gives us an EList<IfcLocalPlacement>
     local_placements.each do |local_placement|
@@ -34,14 +36,13 @@ make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
       point = placement.getLocation()
       translation = placement.getAxis()
       rotation = placement.getRefDirection()
-      text = modelHelper.getTargetModel().createAndAdd(IfcText.class)
       output = "Point: "
       point.getCoordinatesAsString().each do |coord|
         output = output + coord + ", "
       end
       #output = output + "Translation: "
-
-      text.setWrappedValue(output)
+      root.setName("Output")
+      root.setDescription(output)
       #modelHelper.copy(text, false)
     end
   end
