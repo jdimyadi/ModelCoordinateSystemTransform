@@ -2,29 +2,6 @@ import org.bimserver.models.ifc2x3tc1.*;
 
 #make_query is macro
 make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
-#  stories = model.getAll(IfcBuildingStorey.class)
-#
-#  lowestElevation = 0.0
-#  lowestStorey = nil
-#  stories.each do |storey: IfcBuildingStorey|
-#    if (lowestStorey === nil || (lowestElevation > storey.getElevation()))
-#      lowestElevation = storey.getElevation()
-#      lowestStorey = storey
-#    end
-#  end
-#  if (!(lowestStorey === nil))
-#    lowestStorey.getContainsElements().each do |containment|
-#      containment.getRelatedElements().each do |products|
-#        modelHelper.copy(products, false)
-#      end
-#    end
-#  end
-#
-#  modelHelper.getTargetModel()
-
-
-  #modelHelper.copy(root, true)
-
   spaces = model.getAll(IfcSpace.class)
   spaces.each do |space|
     object_placement = space.getObjectPlacement()
@@ -39,10 +16,16 @@ make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
       point.getCoordinatesAsString().each do |coord|
         output = output + coord + ", "
       end
-      #output = output + "Translation: "
+      output = output + "Translation: "
+      translation.getDirectionRatiosAsString().each do |ratio|
+        output = output + ratio + ", "
+      end
+      output = output + "Rotation: "
+      rotation.getDirectionRatiosAsString().each do |ratio|
+        output = output + ratio + ", "
+      end
       root.setName("Output")
       root.setDescription(output)
-      #modelHelper.copy(text, false)
     end
   end
 
