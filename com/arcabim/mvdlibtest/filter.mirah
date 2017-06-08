@@ -57,8 +57,29 @@ class Transform
       new_point.getCoordinates().add(2, point.getCoordinates().get(2) + z)
       new_point
     end
-
-end
+    def plus(point1: IfcCartesianPoint, point2: IfcCartesianPoint)
+      new_point = @modelHelper.getTargetModel().createAndAdd(IfcCartesianPoint.class)
+      # We assume the points are stored x, y, z for now
+      new_point.setDim(3)
+      new_point.getCoordinates().add(0, point1.getCoordinates().get(0) + point2.getCoordinates().get(0))
+      new_point.getCoordinates().add(1, point1.getCoordinates().get(1) + point2.getCoordinates().get(1))
+      new_point.getCoordinates().add(2, point1.getCoordinates().get(2) + point2.getCoordinates().get(2))
+      new_point
+    end
+    def minus(point1: IfcCartesianPoint, point2: IfcCartesianPoint)
+      new_point = @modelHelper.getTargetModel().createAndAdd(IfcCartesianPoint.class)
+      # We assume the points are stored x, y, z for now
+      new_point.setDim(3)
+      new_point.getCoordinates().add(0, point1.getCoordinates().get(0) - point2.getCoordinates().get(0))
+      new_point.getCoordinates().add(1, point1.getCoordinates().get(1) - point2.getCoordinates().get(1))
+      new_point.getCoordinates().add(2, point1.getCoordinates().get(2) - point2.getCoordinates().get(2))
+      new_point
+    end
+    def angles(vector1: IfcDirection, vector2: IfcDirection)
+      # TODO
+    end
+  
+  end
 
 #make_query is macro
 make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
