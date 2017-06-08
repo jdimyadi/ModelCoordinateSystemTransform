@@ -74,11 +74,6 @@ make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
   # wcs is defined as an IfcAxis2Placement3D instance
   wcs = IfcAxis2Placement3D.class.cast(IfcGeometricRepresentationContext.class.cast(project.getRepresentationContexts().get(0)).getWorldCoordinateSystem())
   wcs_origin = wcs.getLocation()
-  wcs_origin = modelHelper.getTargetModel().createAndAdd(IfcCartesianPoint.class)
-  wcs_origin.setDim(3)
-  wcs_origin.getCoordinates().add(0, 77777.777)
-  wcs_origin.getCoordinates().add(1, 77777.777)
-  wcs_origin.getCoordinates().add(2, 77777.777)
   wcs_x_axis = wcs.getRefDirection() 
   wcs_z_axis =  wcs.getAxis()
   transform = Transform.new(modelHelper)
