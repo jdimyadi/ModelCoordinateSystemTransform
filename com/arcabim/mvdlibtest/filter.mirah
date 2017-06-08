@@ -27,7 +27,8 @@ class Transform
           elsif IfcLocalPlacement.class.cast(child.getObjectPlacement()).getRelativePlacement().kind_of?(IfcAxis2Placement3D)
             # Get placement information
             child_placement = IfcAxis2Placement3D.class.cast(IfcLocalPlacement.class.cast(child.getObjectPlacement()).getRelativePlacement())
-            child_placement.setLocation(origin_point)
+            current_point = plus(origin_point, child_placement.getLocation())
+            child_placement.setLocation(current_point)
             # Transform child placement by the base transform
             # ...translation and rotating this child's placement to the new coordinates system that has been passed in to the transformer
           else
