@@ -35,6 +35,28 @@ class Transform
             # We don't have a 3D thing
           end
     end
+    def do_bounding_box(box: IfcSpace, delta: IfcCartesianPoint)
+      representation = box.getRepresentation()
+      if(representation != nil && representation.kind_of?(IfcProductDefinitionShape))
+        IfcProductDefinitionShape.class.cast(representation).getHasShapeAspects().each do |shapeAspect|
+          shapeAspect.getShapeRepresentations().each do |shape_representation|
+            if(shape_representation.kind_of?(IfcShapeRepresentation))
+              representation_type = shape_representation.getRepresentationType()
+              if(representation_type.equals("BoundingBox"))
+                shape_representation.getItems().each do |item|
+                  if(item.kind_of?(IfcBoundingBox))
+                    bounds = IfcBoundingBox.class.cast(item)
+                    original_corner = bounds.getCorner()
+                    # To do rotation, we will need to handle the XDim, YDim, ZDim somehow. Ignore for now.
+                    bounds.setCorner(plus(original_corner, delta))
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
     def transformer(entity: IfcSpatialStructureElement, origin_point: IfcCartesianPoint, x_axis: IfcDirection, z_axis: IfcDirection)
       doublechildren = entity.getContainsElements()
       doublechildren.each do |children: IfcRelContainedInSpatialStructure|
