@@ -15,8 +15,8 @@ class Transform
             # That is, there is a pair of inverses which we compute, one to transform the lcs, one to pass on to transform children
             # The transforms will both be translate-rotate-translate-translate, as they involve rotation around a point and then translation
             # translation and rotation computation for the children of the IfcSpatialStructureElement
-            
-            new_origin_point = translate(origin_point, 9000.0, -300.0, 77.0)
+
+            new_origin_point = plus(origin_point, old_origin_point) #translate(origin_point, 9000.0, -300.0, 77.0)
             new_x_axis = x_axis
             new_z_axis = z_axis
             transformer(IfcSpatialStructureElement.class.cast(child), new_origin_point, new_x_axis, new_z_axis)
@@ -79,7 +79,7 @@ class Transform
     def angles(vector1: IfcDirection, vector2: IfcDirection)
       # TODO
     end
-  
+
   end
 
 #make_query is macro
@@ -96,7 +96,7 @@ make_query("com.arcabim.mvdlibtest", "getFloorCoordinates") do
   # wcs is defined as an IfcAxis2Placement3D instance
   wcs = IfcAxis2Placement3D.class.cast(IfcGeometricRepresentationContext.class.cast(project.getRepresentationContexts().get(0)).getWorldCoordinateSystem())
   wcs_origin = wcs.getLocation()
-  wcs_x_axis = wcs.getRefDirection() 
+  wcs_x_axis = wcs.getRefDirection()
   wcs_z_axis =  wcs.getAxis()
   transform = Transform.new(modelHelper)
   sites.each do |site|
