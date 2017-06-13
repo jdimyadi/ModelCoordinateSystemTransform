@@ -6,7 +6,7 @@ MVD_MIRAH_INCLUDES = "$(MVD_MIRAH_LIBRARY)make_query.mirah"
 
 # Location of mirah extension macro jar, which needs to be present when compiling an MVD
 
-MVD_MIRAH_JAR = /Users/jdim006/Codes/MVD-project/develop-mvd/mvd-compile-time-jar/mvd-macros.jar
+MVD_MIRAH_JAR = /Users/jdim006/Codes/MVD-project/develop-mvd/mvd-extension-macros/mvd-macros.jar
 
 # Path to BIMserver jars
 

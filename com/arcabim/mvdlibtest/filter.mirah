@@ -1,5 +1,6 @@
 import org.bimserver.models.ifc2x3tc1.*;
 import org.bimserver.plugins.ModelHelper;
+
 class Transform
     def initialize(modelHelper: ModelHelper)
       @modelHelper = modelHelper
@@ -16,6 +17,12 @@ class Transform
             # The transforms will both be translate-rotate-translate-translate, as they involve rotation around a point and then translation
             # translation and rotation computation for the children of the IfcSpatialStructureElement
 
+            # Now move all the reletaed geometry to the wcs
+            # We do this by cases, as each type of IfcProduct and each type of geometry has its own rules
+            if(child.kind_of?(IfcSpace))
+              # We do all of the operations for an IfcSpace in here
+              do_bounding_box(IfcSpace.class.cast(child), plus(old_origin_point, origin_point))
+            end
             new_origin_point = plus(origin_point, old_origin_point) #translate(origin_point, 9000.0, -300.0, 77.0)
             new_x_axis = x_axis
             new_z_axis = z_axis
@@ -25,12 +32,7 @@ class Transform
             child_placement.setAxis(z_axis)
             child_placement.setRefDirection(x_axis)
 
-            # Now move all the reletaed geometry to the wcs
-            # We do this by cases, as each type of IfcProduct and each type of geometry has its own rules
-            if(child.kind_of?(IfcSpace))
-              # We do all of the operations for an IfcSpace in here
-              do_bounding_box(IfcSpace.class.cast(child), minus(old_origin_point, origin_point))
-            end
+
           elsif IfcLocalPlacement.class.cast(child.getObjectPlacement()).getRelativePlacement().kind_of?(IfcAxis2Placement3D)
             # Get placement information
             child_placement = IfcAxis2Placement3D.class.cast(IfcLocalPlacement.class.cast(child.getObjectPlacement()).getRelativePlacement())
@@ -49,7 +51,9 @@ class Transform
           shapeAspect.getShapeRepresentations().each do |shape_representation|
             if(shape_representation.kind_of?(IfcShapeRepresentation))
               representation_type = shape_representation.getRepresentationType()
-              if(representation_type.equals("BoundingBox"))
+              if(representation_type.equals("Brep"))
+                transform_brep(shape_representation, delta)
+              elsif(representation_type.equals("BoundingBox"))
                 shape_representation.getItems().each do |item|
                   if(item.kind_of?(IfcBoundingBox))
                     bounds = IfcBoundingBox.class.cast(item)
@@ -58,6 +62,27 @@ class Transform
                     bounds.setCorner(plus(original_corner, delta))
                   end
                 end
+              end
+            end
+          end
+        end
+      end
+    end
+    def transform_brep(brep_container: IfcShapeModel, delta: IfcCartesianPoint)
+      brep_container.getItems().each do |item|
+        if(item.kind_of?(IfcFacetedBrep))
+          IfcFacetedBrep.class.cast(item).getOuter().getCfsFaces().each do |face|
+            face.getBounds().each do |bound|
+              actual_bound = bound.getBound()
+              if(actual_bound.kind_of?(IfcPolyLoop))
+                polyloop = IfcPolyLoop.class.cast(actual_bound)
+                polygon = polyloop.getPolygon().map do |point|
+                  # Each point will need to be transformed.
+                  # At this point we just translate
+                  plus(point, delta)
+                end
+                #polyloop.getPolygon().clear()
+                polyloop.getPolygon().addAll(polygon)
               end
             end
           end
