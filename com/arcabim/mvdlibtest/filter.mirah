@@ -21,7 +21,7 @@ class Transform
             # We do this by cases, as each type of IfcProduct and each type of geometry has its own rules
             if(child.kind_of?(IfcSpace))
               # We do all of the operations for an IfcSpace in here
-              do_bounding_box(IfcSpace.class.cast(child), plus(old_origin_point, origin_point))
+              do_bounding_box(IfcSpace.class.cast(child), minus(old_origin_point, origin_point))
             end
             new_origin_point = plus(origin_point, old_origin_point) #translate(origin_point, 9000.0, -300.0, 77.0)
             new_x_axis = x_axis
@@ -81,7 +81,7 @@ class Transform
                   # At this point we just translate
                   plus(point, delta)
                 end
-                #polyloop.getPolygon().clear()
+                polyloop.getPolygon().clear()
                 polyloop.getPolygon().addAll(polygon)
               end
             end
