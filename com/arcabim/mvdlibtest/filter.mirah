@@ -24,6 +24,13 @@ class Transform
             child_placement.setLocation(origin_point)
             child_placement.setAxis(z_axis)
             child_placement.setRefDirection(x_axis)
+
+            # Now move all the reletaed geometry to the wcs
+            # We do this by cases, as each type of IfcProduct and each type of geometry has its own rules
+            if(child.kind_of?(IfcSpace))
+              # We do all of the operations for an IfcSpace in here
+              do_bounding_box(IfcSpace.class.cast(child), minus(old_origin_point, origin_point))
+            end
           elsif IfcLocalPlacement.class.cast(child.getObjectPlacement()).getRelativePlacement().kind_of?(IfcAxis2Placement3D)
             # Get placement information
             child_placement = IfcAxis2Placement3D.class.cast(IfcLocalPlacement.class.cast(child.getObjectPlacement()).getRelativePlacement())
